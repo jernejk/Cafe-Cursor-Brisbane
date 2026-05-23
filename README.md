@@ -1,109 +1,74 @@
-# Cafe Cursor Brisbane
+# Mosaic Pop
 
-**May 23, 2026 · Contribution board**
+A relaxing mobile-first tile-collection puzzle prototype. Tap matching coloured tiles on a pixel-art mosaic board to fill the collection tray, then advance through a sequence of target colours.
 
-Add your project as a card on **[cafecursorbrisbane.com](https://cafecursorbrisbane.com/)** by forking this repo, adding one JSON file on a branch, and opening a pull request back here.
-
-You do **not** need push access to this repo — you push to **your fork**, then we merge your PR.
-
-## Add your card
-
-### 1. Fork this repo
-
-On GitHub, open **[github.com/0NATE4/Cafe-Cursor-Brisbane](https://github.com/0NATE4/Cafe-Cursor-Brisbane)** and click **Fork** (top right). That creates a copy under your GitHub account.
-
-### 2. Clone your fork
-
-Clone **your** fork, not the original repo. Replace `YOUR-GITHUB-USERNAME` with yours:
-
-```bash
-git clone https://github.com/YOUR-GITHUB-USERNAME/Cafe-Cursor-Brisbane.git
-cd Cafe-Cursor-Brisbane
-```
-
-In Cursor, you can open that folder and ask the agent to help you add your card from the template.
-
-### 3. Create a branch
-
-Do **not** work on `main`. Create your own branch (use your name or slug):
-
-```bash
-git checkout -b yourname
-```
-
-### 4. Create your JSON file from the template
-
-You need a **new file** with your own name. Do **not** edit `_template.json`.
-
-1. Open `src/content/contributions/_template.json` and **copy all of its contents**.
-2. Create a **new file** next to it: `src/content/contributions/your-slug.json`  
-   (use a short, URL-friendly slug, e.g. `jane-doe`).
-3. **Paste** the copied template into that new file and save.
-
-Or in the terminal (replace `jane-doe` with your slug):
-
-```bash
-cp src/content/contributions/_template.json src/content/contributions/jane-doe.json
-```
-
-In Cursor, you can say: *“Create `src/content/contributions/jane-doe.json` using the contents of `_template.json`, then fill in my details.”*
-
-### 5. Fill in your file
-
-| Field | What to write |
-| --- | --- |
-| `slug` | Same as your filename (e.g. `jane-doe`) |
-| `name` | Your name |
-| `contribution` | One sentence: what you made |
-| `headline` | Short title for your project |
-| `summary` | One paragraph for your detail page |
-| `body` | Longer story; multiple lines are fine |
-| `github`, `linkedin`, `website` | Optional links (leave out if you do not use them) |
-| `coverImage` | Optional; see step 6 |
-
-Edit the **new file** you created in step 4 — not `_template.json`.
-
-See `src/content/contributions/example-contributor.json` for a filled-in example.
-
-### 6. Optional cover image
-
-Add an image at:
-
-`public/contributions/your-slug/cover.png`
-
-Then set in your JSON:
-
-`"coverImage": "/contributions/your-slug/cover.png"`
-
-### 7. Commit and push to your fork
-
-When your files are ready:
-
-```bash
-git add .
-git commit -m "Add my project card"
-git push -u origin yourname
-```
-
-Use your own commit message if you like. Replace `yourname` with the branch name you created in step 3.
-
-This pushes to **your fork**. You cannot push directly to `0NATE4/Cafe-Cursor-Brisbane` unless you are a collaborator.
-
-### 8. Open a pull request
-
-On GitHub, go to **your fork** and click **Compare & pull request** (or **Contribute → Open pull request**).
-
-Open a PR **into** `0NATE4/Cafe-Cursor-Brisbane` → `main`. After it is merged, the site updates and your card appears on the board.
-
-Not sure how to do that? Ask Nathan :)
-
-## Preview on your machine (optional)
-
-After cloning your fork (step 2) and creating your branch (step 3), you can preview your card before you commit:
+## Run locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-Then open the local URL shown in the terminal (usually `http://localhost:5173`).
+Open the dev server URL on your phone or use browser dev tools in portrait mode (~360–720px wide).
+
+## Build
+
+```bash
+npm run build
+```
+
+Output goes to `dist/`.
+
+## How to play
+
+1. The board shows a fixed pixel-art **background** with scrambled **bubbles** on top (bubbles often sit on the wrong coloured square).
+2. The top tray row shows the current **target** colour. Progress counts how many target tiles are **correctly placed** on the board (e.g. **Target: Cream 4/12**).
+3. Tap any bubble on the board to pick it into the **bottom buffer** (mixed colours, up to 12 slots).
+4. Tap a buffer tile to select it, then tap a board cell whose background matches that colour to **place** it. A correct placement puts the bubble on the matching square.
+5. Wrong taps or invalid placements shake briefly.
+6. Place 12 target-colour tiles correctly to advance to the next target (Cream → Orange → …). The buffer keeps other colours until you place them.
+
+### Target order
+
+Cream → Orange → Navy → Cyan → Yellow → Pink → Tan → Stone → Violet
+
+### Boosters
+
+| Button | Effect |
+|--------|--------|
+| Magic wand | Collects a random cluster of the current target colour |
+| Brush | Recolours one random non-target tile to the current target |
+| Magnet | Collects up to 12 visible target tiles at once |
+
+The small red play badges are decorative only—no ads are shown.
+
+### Settings
+
+- **Restart Level** — reset the board and target to Cream
+- **Animations** — toggle fly-to-tray animations
+- **Sound** — toggle short Web Audio pops (no audio files bundled)
+
+## Tech stack
+
+- Vite + React + TypeScript
+- HTML Canvas for the mosaic board
+- CSS/HTML for tray, toolbar, and modals
+- No external image assets
+
+## Project structure
+
+```
+src/
+  App.tsx              — layout, reducer wiring
+  components/
+    GameCanvas.tsx     — board rendering & animations
+    Tray.tsx           — collection slots
+    Toolbar.tsx        — booster buttons
+    SettingsModal.tsx
+  game/
+    types.ts
+    colors.ts
+    level.ts           — level 1 matrix (24×33)
+    logic.ts           — flood-fill, targets, boosters
+    reducer.ts
+```
